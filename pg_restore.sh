@@ -7,31 +7,88 @@ pgdumpall=/usr/pgsql-16/bin/pg_dumpall
 psql=/usr/pgsql-16/bin/psql
 
 
-echo "Odtwarzam użytkowników"
-$psql -f /"$backup_dir"/backupy/globals.sql
 
-read -p "Naciśnij enter aby rozpocząć odtwarzanie baz"
-
-
-while read p; do
-
-backupwana_baza=$p
-if [ "$p" != "postgres" ]
-then
-
-echo "\n \n Odtwarzam bazę" $p
-createdb $p
-
-$psql -d "$p" -f /"$backup_dir"/backupy/"$p".sql
+loop=yes
+while [ "$loop" = yes ]; do
 
 
 
-fi
 
 
-done </"$backup_dir"/"$baza"/bazy.txt
+echo -e "\nWybierz opcję: [y - rozpocznij restore baz] [e - update pg_extension] [x - wyjście]"
 
-echo -e "\n     *******\nZAKOŃCZONO RESTORE BAZ \n     ******* \n"
+read -s -n 1 key
+
+
+case $key in
+    y|Y)
+
+        $psql -f /"$backup_dir"/backupy/globals.sql
+        echo -e "\nOdtworzono użytkowników\n"
+        read -p "Naciśnij enter aby rozpocząć odtwarzanie baz"
+
+
+        while read p; do
+
+        backupwana_baza=$p
+        if [ "$p" != "postgres" ]
+        then
+
+        echo "\n \n Odtwarzam bazę" $p
+        createdb $p
+
+        $psql -d "$p" -f /"$backup_dir"/backupy/"$p".sql
+        fi
+
+
+        done </"$backup_dir"/bazy.txt
+
+
+
+        ;;
+    e|E)
+        echo "Rozpoczynam update"
+
+
+                while read p; do
+
+                backupwana_baza=$p
+                  echo "Baza: " $p
+                        psql -d "$p" -t -c "SELECT format('ALTER EXTENSION %I UPDATE;',extname) FROM pg_extension"
+
+                done </"$backup_dir"/bazy.txt
+
+
+
+    ;;
+
+
+    x|X)
+        echo -e "\n***** Zakończono skrypt *****"
+        loop=no
+        exit 1
+        ;;
+    *)
+        echo "Nieprawidłowy output"
+        ;;
+
+
+esac
+
+   done
+done
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
