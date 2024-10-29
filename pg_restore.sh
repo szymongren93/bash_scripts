@@ -22,7 +22,7 @@ read -s -n 1 key
 
 case $key in
     y|Y)
-
+        sed -i 's/CREATE ROLE postgres/#CREATE ROLE postgres/g' /"$backup_dir"/backupy/globals.sql
         $psql -f /"$backup_dir"/backupy/globals.sql
         echo -e "\nOdtworzono użytkowników\n"
         read -p "Naciśnij enter aby rozpocząć odtwarzanie baz"
