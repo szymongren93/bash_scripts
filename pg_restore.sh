@@ -37,7 +37,7 @@ case $key in
         echo "\n \n Odtwarzam bazę" $p
         createdb $p
 
-        $psql -d "$p" -f /"$backup_dir"/backupy/"$p".sql
+        $psql -d "$p" -v ON_ERROR_STOP=on -f /"$backup_dir"/backupy/"$p".sql
         fi
 
 
