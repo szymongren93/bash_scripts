@@ -23,7 +23,7 @@ read -s -n 1 key
 case $key in
     u|U)
         sed -i 's/CREATE ROLE postgres/-- CREATE ROLE postgres/g' /"$backup_dir"/backupy/globals.sql
-        sudo -u postgres $psql -f /"$backup_dir"/backupy/globals.sql
+        sudo -u postgres $psql -f /"$backup_dir"/backupy/globals.sql -a
         echo -e "\n***** Odtworzono użytkowników *****\n"
 
 
