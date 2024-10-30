@@ -2,9 +2,9 @@
 
 
 backup_dir=/migracjapg
-pgdump=/usr/pgsql-16/bin/pg_dump
-pgdumpall=/usr/pgsql-16/bin/pg_dumpall
-psql=/usr/pgsql-16/bin/psql
+pgdump=/usr/pgsql-12/bin/pg_dump
+pgdumpall=/usr/pgsql-12/bin/pg_dumpall
+psql=/usr/pgsql-12/bin/psql
 
 
 sudo -u postgres $psql -d postgres -t -c "SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = false;"  > /"$backup_dir"/bazy.txt
