@@ -15,49 +15,54 @@ while [ "$loop" = yes ]; do
 
 
 
-echo -e "\nWybierz opcję: [y - rozpocznij restore baz] [e - update pg_extension] [x - wyjście]"
+echo -e "\nWybierz opcję: \n [u] - odtworzenie użytkowników \n [r] - restore baz \n [e] - update pg_extension \n [x] - wyjście"
 
 read -s -n 1 key
 
 
 case $key in
-    y|Y)
-        #sed -i 's/CREATE ROLE postgres/#CREATE ROLE postgres/g' /"$backup_dir"/backupy/globals.sql
-        $psql -f /"$backup_dir"/backupy/globals.sql
-        echo -e "\nOdtworzono użytkowników\n"
-        read -p "Naciśnij enter aby rozpocząć odtwarzanie baz"
+    u|U)
+        sed -i 's/CREATE ROLE postgres/-- CREATE ROLE postgres/g' /"$backup_dir"/backupy/globals.sql
+        sudo -u postgres $psql -f /"$backup_dir"/backupy/globals.sql
+        echo -e "\n***** Odtworzono użytkowników *****\n"
 
 
+
+    ;;
+
+
+    r|R)
         while read p; do
 
         backupwana_baza=$p
         if [ "$p" != "postgres" ]
         then
 
-        echo "\n \n Odtwarzam bazę" $p
-        createdb $p
+        echo -e "\n \n***** Odtwarzam bazę" $p " *****"
+        sleep 2
+        sudo -u postgres createdb $p
 
-        $psql -d "$p" -v ON_ERROR_STOP=on -f /"$backup_dir"/backupy/"$p".sql
+        sudo -u postgres $psql -d "$p" -v ON_ERROR_STOP=on -f /"$backup_dir"/backupy/"$p".sql
         fi
 
 
         done </"$backup_dir"/bazy.txt
 
-
+        echo -e "\n \n***** Zakończono odtwarzanie baz *****\n"
 
         ;;
     e|E)
-        echo "Rozpoczynam update"
+        echo -e "\n***** Rozpoczynam update *****\n"
 
 
                 while read p; do
 
                 backupwana_baza=$p
                   echo "Baza: " $p
-                        psql -d "$p" -t -c "SELECT format('ALTER EXTENSION %I UPDATE;',extname) FROM pg_extension"
+                        sudo -u postgres $psql -d "$p" -t -c "SELECT format('ALTER EXTENSION %I UPDATE;',extname) FROM pg_extension"
 
                 done </"$backup_dir"/bazy.txt
-
+        echo -e "\n \n***** Zakończono extension update *****\n"
 
 
     ;;
@@ -77,23 +82,3 @@ esac
 
    done
 done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
