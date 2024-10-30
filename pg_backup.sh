@@ -13,7 +13,7 @@ sed -i '$ d' /"$backup_dir"/bazy.txt
 
 
 mkdir -p /"$backup_dir"/backupy
-
+chmod 777 /"$backup_dir"/backupy
 
 echo "Backupuję użytkowników"
 sudo -u postgres $pgdumpall --globals-only -f /"$backup_dir"/backupy/globals.sql
