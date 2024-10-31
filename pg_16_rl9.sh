@@ -20,7 +20,7 @@ firewall-cmd --permanent --add-service=postgresql
 firewall-cmd --reload
 
 
-sed -i 's/#listen_addresses = /listen_addresses/g' /var/lib/pgsql/16/data/postgresql.conf
+sed -i "s/# - Connection Settings -/listen_addresses = '*'/g" /var/lib/pgsql/16/data/postgresql.conf
 sed -i -e '$ahost\tall\t\tall\t\tall\t\t\tmd5' /var/lib/pgsql/16/data/pg_hba.conf
 
 dnf install postgis34_16 -y
