@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LISTA="/install/params"
+LISTA="/migracjapg/params"
 CONF="/var/lib/pgsql/16/data/postgresql.conf"
 
 awk '
